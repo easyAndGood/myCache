@@ -1,0 +1,38 @@
+syntax = "proto3";
+option go_package="./;mycachepb";
+package mycachepb;
+
+message Request {
+    string group = 1;
+    string key = 2;
+}
+
+message KVResponse {
+    bytes value = 1;
+}
+
+message InfoResponse {
+    int64 keysNum = 1;
+    int64 current_used_bytes = 2;
+    int64 max_used_bytes = 3;
+}
+
+service GroupCache {
+rpc Get(Request) returns (KVResponse);
+}
+/*
+如果想要将消息类型用在RPC(远程方法调用)系统中，可以在.proto文件中定义一个RPC服务接口，
+protocol buffer编译器将会根据所选择的不同语言生成服务接口代码及存根。
+如，想要定义一个RPC服务并具有一个方法，该方法能够接收 SearchRequest并返回一个SearchResponse，
+此时可以在.proto文件中进行如下定义：
+service SearchService {
+  rpc Search (SearchRequest) returns (SearchResponse);
+}
+protocol编译器将产生一个抽象接口SearchService以及一个相应的存根实现。
+存根将所有的调用指向RpcChannel，它是一 个抽象接口，必须在RPC系统中对该接口进行实现。
+如，可以实现RpcChannel以完成序列化消息并通过HTTP方式来发送到一个服务器。
+换句话说， 产生的存根提供了一个类型安全的接口用来完成基于protocolbuffer的RPC调用，
+而不是将你限定在一个特定的RPC的实现中。
+
+生成的方法：protoc --go_out=. *.proto 
+*/
